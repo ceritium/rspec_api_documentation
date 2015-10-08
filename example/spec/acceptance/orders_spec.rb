@@ -7,7 +7,7 @@ resource "Orders" do
   let(:order) { Order.create(:name => "Old Name", :paid => true, :email => "email@example.com") }
 
   get "/orders" do
-    parameter :page, "Current page of orders"
+    parameter :page, "Current page of orders", type: :integer, format: :int32
 
     let(:page) { 1 }
 
@@ -30,9 +30,9 @@ resource "Orders" do
   end
 
   post "/orders" do
-    parameter :name, "Name of order", :required => true, :scope => :order
-    parameter :paid, "If the order has been paid for", :required => true, :scope => :order
-    parameter :email, "Email of user that placed the order", :scope => :order
+    parameter :name, "Name of order", :required => true, :scope => :order, type: :string
+    parameter :paid, "If the order has been paid for", :required => true, :scope => :order, type: :boolean
+    parameter :email, "Email of user that placed the order", :scope => :order, type: :string
 
     response_field :name, "Name of order", :scope => :order, "Type" => "String"
     response_field :paid, "If the order has been paid for", :scope => :order, "Type" => "Boolean"
@@ -63,6 +63,8 @@ resource "Orders" do
   get "/orders/:id" do
     let(:id) { order.id }
 
+    parameter :id, 'The id', in: :path, type: :integer, format: :int32
+
     example_request "Getting a specific order" do
       expect(response_body).to eq(order.to_json)
       expect(status).to eq(200)
@@ -70,9 +72,10 @@ resource "Orders" do
   end
 
   put "/orders/:id" do
-    parameter :name, "Name of order", :scope => :order
-    parameter :paid, "If the order has been paid for", :scope => :order
-    parameter :email, "Email of user that placed the order", :scope => :order
+    parameter :id, 'The id', in: :path, type: :integer, format: :int32
+    parameter :name, "Name of order", :scope => :order, type: :string
+    parameter :paid, "If the order has been paid for", :scope => :order, type: :boolean
+    parameter :email, "Email of user that placed the order", :scope => :order, type: :string
 
     let(:id) { order.id }
     let(:name) { "Updated Name" }
@@ -87,6 +90,7 @@ resource "Orders" do
   delete "/orders/:id" do
     let(:id) { order.id }
 
+    parameter :id, 'The id', in: :path, type: :integer, format: :int32
     example_request "Deleting an order" do
       expect(status).to eq(204)
     end

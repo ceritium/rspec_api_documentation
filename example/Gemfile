@@ -6,6 +6,9 @@ gem 'spring', group: :development
 gem 'raddocs', :github => "smartlogic/raddocs"
 
 group :test, :development do
+  gem 'pry'
+  gem 'pry-byebug'
+  gem 'byebug'
   gem 'rspec-rails'
   gem 'rspec_api_documentation', :path => "../"
 end
