@@ -53,6 +53,11 @@ module RspecApiDocumentation::DSL
         headers[name] = value
       end
 
+      def definition(name, value)
+        metadata[:definitions] ||= {}
+        metadata[:definitions][name] = value
+      end
+
       private
 
       def safe_metadata(field, default)

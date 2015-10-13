@@ -30,11 +30,16 @@ module RspecApiDocumentation
             version: '0.0.1',
             title: @configuration.api_name
           },
-          paths: add_paths
+          paths: add_paths,
+          definitions: add_definitions
         }
       end
 
       private
+
+      def add_definitions
+        examples.map{|x| x[:definitions]}.uniq[0]
+      end
 
       def add_paths
         hash = {}
