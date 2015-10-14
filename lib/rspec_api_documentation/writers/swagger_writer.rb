@@ -24,15 +24,18 @@ module RspecApiDocumentation
       end
 
       def as_json
-        {
+        paths = add_paths
+        definitions = add_definitions
+        hash = {
           swagger: '2.0',
           info: {
             version: '0.0.1',
             title: @configuration.api_name
-          },
-          paths: add_paths,
-          definitions: add_definitions
+          }
         }
+        hash[:paths] = paths if paths.present?
+        hash[:definitions] = definitions if definitions.present?
+        hash
       end
 
       private
@@ -65,12 +68,21 @@ module RspecApiDocumentation
       end
 
       def example_to_swagger(example)
+        # TODO: Probably need all the examples for a method and path and merge
+        # the data in some way
         {
           summary: example[:description],
           description: example[:full_description],
           parameters: add_parameters(example[:parameters]),
-          responses: add_responses(example[:requests])
+          responses: add_responses(example[:requests]),
+          consumes: add_consumes(example)
         }
+      end
+
+      def add_consumes(example)
+        [
+          example[:headers]['Content-Type']
+        ]
       end
 
       def add_parameters(parameters)
